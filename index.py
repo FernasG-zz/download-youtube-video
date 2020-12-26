@@ -8,7 +8,24 @@ root.geometry("1280x720")
 fontePadrao = ("Arial", "15")
 master = None
 
+downloadIcone = PhotoImage(file=r"/home/fernas/Code/Python/youtubeVideoDownloader/images/download.png") 
+
 # Funcões para Interação com "back-end"
+def fazerDownload():
+    pass
+
+def adicionaLista(data):
+    values = []
+
+    for option in data:
+        values.append(option["tag"] + " -> " + option["res"] + ", " + option["fps"])
+
+    root.caixaLista["listvariable"] = StringVar(value=tuple(values))
+    root.caixaLista["height"] = len(values)
+    root.caixaLabel.pack()
+    root.caixaLista.pack()
+    root.botaoDownload.pack()
+
 def pesquisarVideo():
     link = root.link.get()
 
@@ -16,8 +33,9 @@ def pesquisarVideo():
         root.alert["text"] = ""
         root.alert["pady"] = 0
 
-        streamList = core.downloaderManager(link)
-        root.videoInfo["text"] = "[ " + streamList["title"] + " ] - " + streamList["author"] + " / " + str(streamList["views"])
+        streamList = core.getVideoStreams(link)
+        root.videoInfo["text"] = "[ " + streamList["title"] + " ] - por " + streamList["author"]
+        adicionaLista(streamList["data"])
 
     else: 
         root.alert["text"] = "Insira um link válido!"
@@ -62,6 +80,15 @@ root.botao.pack()
 root.videoInfo = Label(root.containerConteudo, text="", font=("Calibri", "12"))
 root.videoInfo["pady"] = 30
 root.videoInfo.pack()
+
+root.caixaLabel = Label(root.containerConteudo, text="Escolha uma opcão de qualidade")
+root.caixaLista = Listbox(root.containerConteudo, selectmode="browse")
+root.caixaLista["width"] = 50
+
+root.botaoDownload = Button(root.containerConteudo, text="BAIXAR", image=downloadIcone)
+root.botaoDownload["pady"] = 10
+root.botaoDownload["width"] = 15
+root.botaoDownload["command"] = fazerDownload
 
 # Seção do Rodapé
 root.info = ttk.Progressbar(root.containerRodape, orient=HORIZONTAL, length=300, mode="determinate")

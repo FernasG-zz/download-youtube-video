@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 # My Folders
-test.py
+./test.py
 .temp/

@@ -1,44 +1,34 @@
 from pytube import YouTube
 
-class downloaderManager:
-    def __new__(self, link):
-        yt = YouTube(link)
-        videoOption = self.treatData(self, yt.streams)
+def sliceStreamString(string, info):
+    pos = int(string.find(info)) 
+    c = pos+5
 
-        response = {
-            "title": yt.title,
-            "author": yt.author,
-            "views": yt.views,
-            "data": videoOption
+    if pos != -1:
+        while string[c] != '"':
+            c += 1
+
+    return string[pos+5:c]
+
+def getVideoStreams(link):
+    yt = YouTube(link)
+    streams = yt.streams.filter(type="video", file_extension="mp4")
+    data = []
+
+    videoInfo = {
+        "author": yt.author,
+        "title": yt.title,
+        "data": data
+    }
+
+    for video in streams:
+        new = {
+            "res": sliceStreamString(str(video), "res"),
+            "tag": sliceStreamString(str(video), "tag"),
+            "fps": sliceStreamString(str(video), "fps")
         }
-        return response 
+        data.append(new)
 
-    
-    def treatData(self, videos):
-        downloadableList = []
-
-        for stream in videos:
-            # aux = str(stream)
-            print(stream["type"])
-
-            # if aux.find("video/mp4") != -1:
-            #     downloadableList.append(aux)
-        
-        return downloadableList                
-
-    
-    def downloadVideo(url, itag):
-        pass
-    
-        
+    return videoInfo
 
 
-# def getVideos(link):
-#     yt = YouTube(link)
-#     print(yt.streams[1])
-
-
-#     # yt.streams.filter(subtype='mp4', res='720p').order_by('resolution').first().download('./.temp')
-
-
-# getVideos("https://www.youtube.com/watch?v=Vm0ivVxNaA8")
