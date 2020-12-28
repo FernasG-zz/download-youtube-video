@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import filedialog
 from tkinter import ttk
 import downloader as core
 
@@ -8,11 +9,15 @@ root.geometry("1280x720")
 fontePadrao = ("Arial", "15")
 master = None
 
-downloadIcone = PhotoImage(file=r"/home/fernas/Code/Python/youtubeVideoDownloader/images/download.png") 
-
 # Funcões para Interação com "back-end"
 def fazerDownload():
-    pass
+    selected = str(root.caixaLista.get(ACTIVE))
+    pos = int(selected.find(" "))
+
+    arquivo = filedialog.askdirectory()
+
+    if arquivo:
+        root.videoClass.downloadVideo(selected[:pos], arquivo)
 
 def adicionaLista(data):
     values = []
@@ -33,13 +38,22 @@ def pesquisarVideo():
         root.alert["text"] = ""
         root.alert["pady"] = 0
 
-        streamList = core.getVideoStreams(link)
-        root.videoInfo["text"] = "[ " + streamList["title"] + " ] - por " + streamList["author"]
-        adicionaLista(streamList["data"])
+        # Create Class for the Video Link
+        root.videoClass = core.videoStream(link)
+        
+        # Get Video Info Stored in videoInfo Variable
+        streamList = root.videoClass.videoInfo
+        if streamList["data"]:
+            root.videoInfo["text"] = "[ " + streamList["title"] + " ] - por " + streamList["author"]
+            adicionaLista(streamList["data"])
+        else:
+            oot.alert["text"] = "Erro ao encontrar video, tente novamente mais tarde!"
+            root.alert["pady"] = 10
 
     else: 
         root.alert["text"] = "Insira um link válido!"
         root.alert["pady"] = 10
+
 
 # Seção Titulo 
 tituloLabel = Label(master, text="Youtube Video Downloader", font=("Arial", "20", "bold"))
@@ -85,8 +99,7 @@ root.caixaLabel = Label(root.containerConteudo, text="Escolha uma opcão de qual
 root.caixaLista = Listbox(root.containerConteudo, selectmode="browse")
 root.caixaLista["width"] = 50
 
-root.botaoDownload = Button(root.containerConteudo, text="BAIXAR", image=downloadIcone)
-root.botaoDownload["pady"] = 10
+root.botaoDownload = Button(root.containerConteudo, text="BAIXAR")
 root.botaoDownload["width"] = 15
 root.botaoDownload["command"] = fazerDownload
 
