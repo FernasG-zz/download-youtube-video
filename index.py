@@ -14,10 +14,10 @@ def fazerDownload():
     selected = str(root.caixaLista.get(ACTIVE))
     pos = int(selected.find(" "))
 
-    arquivo = filedialog.askdirectory()
+    if root.videoClass.directory == "":
+        root.videoClass.directory = filedialog.askdirectory()
 
-    if arquivo:
-        root.videoClass.downloadVideo(selected[:pos], arquivo)
+    root.videoClass.downloadVideo(selected[:pos])
 
 def adicionaLista(data):
     values = []
@@ -47,7 +47,7 @@ def pesquisarVideo():
             root.videoInfo["text"] = "[ " + streamList["title"] + " ] - por " + streamList["author"]
             adicionaLista(streamList["data"])
         else:
-            oot.alert["text"] = "Erro ao encontrar video, tente novamente mais tarde!"
+            root.alert["text"] = "Erro ao encontrar video, tente novamente mais tarde!"
             root.alert["pady"] = 10
 
     else: 

@@ -3,7 +3,9 @@ from pytube import YouTube
 class videoStream:
     def __init__(self, link):
         yt = YouTube(link)
+        self.link = link
         self.streams = yt.streams.filter(type="video", file_extension="mp4")
+        self.directory = ""
         data = []
 
         self.videoInfo = {
@@ -13,6 +15,7 @@ class videoStream:
         }
 
         for video in self.streams:
+            print(video)
             new = {
                 "res": self.sliceStreamString(str(video), "res"),
                 "tag": self.sliceStreamString(str(video), "tag"),
@@ -30,8 +33,8 @@ class videoStream:
 
         return string[pos+5:c]
 
-    def downloadVideo(self, itag, file):
-        self.streams.get_by_itag(itag).download(file)
+    def downloadVideo(self, itag):
+        self.streams.get_by_itag(itag).download(self.directory)
 
         
 
